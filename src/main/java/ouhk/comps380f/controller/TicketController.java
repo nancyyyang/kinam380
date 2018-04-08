@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -140,9 +141,12 @@ public class TicketController {
     }
 
     @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.GET)
-    public ModelAndView showEdit(@PathVariable("ticketId") long ticketId) {
+    public ModelAndView showEdit(@PathVariable("ticketId") long ticketId,
+            Principal principal, HttpServletRequest request) {
         Ticket ticket = this.ticketDatabase.get(ticketId);
-        if (ticket == null) {
+        if (ticket == null
+                || (!request.isUserInRole("ROLE_ADMIN")
+                && !principal.getName().equals(ticket.getCustomerName()))) {
             return new ModelAndView(new RedirectView("/ticket/list", true));
         }
         ModelAndView modelAndView = new ModelAndView("edit");
@@ -158,9 +162,16 @@ public class TicketController {
     }
 
     @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.POST)
-    public String edit(@PathVariable("ticketId") long ticketId, Form form)
+    public View edit(@PathVariable("ticketId") long ticketId, Form form,
+            Principal principal, HttpServletRequest request)
             throws IOException {
         Ticket ticket = this.ticketDatabase.get(ticketId);
+        if (ticket == null
+                || (!request.isUserInRole("ROLE_ADMIN")
+                && !principal.getName().equals(ticket.getCustomerName()))) {
+            return new RedirectView("/ticket/list", true);
+        }
+        
         ticket.setSubject(form.getSubject());
         ticket.setBody(form.getBody());
 
@@ -175,7 +186,7 @@ public class TicketController {
             }
         }
         this.ticketDatabase.put(ticket.getId(), ticket);
-        return "redirect:/ticket/view/" + ticket.getId();
+        return new RedirectView("/ticket/view/" + ticket.getId(), true);
     }
 
     @RequestMapping(value = "delete/{ticketId}", method = RequestMethod.GET)
