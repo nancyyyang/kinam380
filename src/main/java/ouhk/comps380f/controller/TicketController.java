@@ -39,7 +39,6 @@ public class TicketController {
 
     public static class Form {
 
-        private String customerName;
         private String subject;
         private String body;
         private List<MultipartFile> attachments;
