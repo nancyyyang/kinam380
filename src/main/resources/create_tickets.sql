@@ -1,8 +1,12 @@
-CREATE TABLE ticket (
+CREATE TABLE item (
     id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
     name VARCHAR(255) NOT NULL,
-    subject VARCHAR(255) NOT NULL,
-    body VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    price FLOAT NOT NULL,
+    owner VARCHAR(255) NOT NULL,
+    num_of_bid INTEGER NOT NULL,
+    status VARCHAR(255) NOT NULL,
+    winner VARCHAR(255),
     PRIMARY KEY (id)
 );
 
@@ -11,7 +15,16 @@ CREATE TABLE attachment (
     filename VARCHAR(255) DEFAULT NULL,
     content_type VARCHAR(255) DEFAULT NULL,
     content BLOB DEFAULT NULL,
-    ticket_id INTEGER DEFAULT NULL,
+    item_id INTEGER DEFAULT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (ticket_id) REFERENCES ticket(id) 
+    FOREIGN KEY (item_id) REFERENCES item(id) 
+);
+
+CREATE TABLE comments (
+    id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+    name VARCHAR(255) NOT NULL,
+    content VARCHAR(255) DEFAULT NULL,
+    item_id INTEGER DEFAULT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (item_id) REFERENCES item(id) 
 );

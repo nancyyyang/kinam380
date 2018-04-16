@@ -11,7 +11,7 @@ import ouhk.comps380f.dao.TicketRepository;
 import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
-import ouhk.comps380f.model.Ticket;
+import ouhk.comps380f.model.Item;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -24,20 +24,20 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public List<Ticket> getTickets() {
+    public List<Item> getTickets() {
         return ticketRepo.findAll();
     }
 
     @Override
     @Transactional
-    public Ticket getTicket(long id) {
+    public Item getTicket(long id) {
         return ticketRepo.findOne(id);
     }
 
     @Override
     @Transactional(rollbackFor = TicketNotFound.class)
     public void delete(long id) throws TicketNotFound {
-        Ticket deletedTicket = ticketRepo.findOne(id);
+        Item deletedTicket = ticketRepo.findOne(id);
         if (deletedTicket == null) {
             throw new TicketNotFound();
         }
@@ -47,7 +47,7 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional(rollbackFor = AttachmentNotFound.class)
     public void deleteAttachment(long ticketId, String name) throws AttachmentNotFound {
-        Ticket ticket = ticketRepo.findOne(ticketId);
+        Item ticket = ticketRepo.findOne(ticketId);
         for (Attachment attachment : ticket.getAttachments()) {
             if (attachment.getName().equals(name)) {
                 ticket.deleteAttachment(attachment);
@@ -62,10 +62,10 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     public long createTicket(String customerName, String subject,
             String body, List<MultipartFile> attachments) throws IOException {
-        Ticket ticket = new Ticket();
-        ticket.setCustomerName(customerName);
+        Item ticket = new Item();
+        /*ticket.setCustomerName(customerName);
         ticket.setSubject(subject);
-        ticket.setBody(body);
+        ticket.setBody(body);*/
 
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
@@ -79,7 +79,7 @@ public class TicketServiceImpl implements TicketService {
                 ticket.getAttachments().add(attachment);
             }
         }
-        Ticket savedTicket = ticketRepo.save(ticket);
+        Item savedTicket = ticketRepo.save(ticket);
         return savedTicket.getId();
     }
 
@@ -88,13 +88,13 @@ public class TicketServiceImpl implements TicketService {
     public void updateTicket(long id, String subject,
             String body, List<MultipartFile> attachments)
             throws IOException, TicketNotFound {
-        Ticket updatedTicket = ticketRepo.findOne(id);
+        Item updatedTicket = ticketRepo.findOne(id);
         if (updatedTicket == null) {
             throw new TicketNotFound();
         }
 
-        updatedTicket.setSubject(subject);
-        updatedTicket.setBody(body);
+        //updatedTicket.setSubject(subject);
+        //updatedTicket.setBody(body);
 
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();

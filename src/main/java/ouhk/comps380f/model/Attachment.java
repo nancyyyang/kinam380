@@ -35,7 +35,7 @@ public class Attachment implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
+    private Item ticket;
 
     public long getId() {
         return id;
@@ -77,11 +77,11 @@ public class Attachment implements Serializable {
         this.ticketId = ticketId;
     }
 
-    public Ticket getTicket() {
+    public Item getTicket() {
         return ticket;
     }
 
-    public void setTicket(Ticket ticket) {
+    public void setTicket(Item ticket) {
         this.ticket = ticket;
     }
 

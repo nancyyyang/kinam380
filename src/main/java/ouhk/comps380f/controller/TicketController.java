@@ -17,7 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
-import ouhk.comps380f.model.Ticket;
+import ouhk.comps380f.model.Item;
 import ouhk.comps380f.service.AttachmentService;
 import ouhk.comps380f.service.TicketService;
 import ouhk.comps380f.view.DownloadingView;
@@ -85,7 +85,7 @@ public class TicketController {
     @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
     public String view(@PathVariable("ticketId") long ticketId,
             ModelMap model) {
-        Ticket ticket = ticketService.getTicket(ticketId);
+        Item ticket = ticketService.getTicket(ticketId);
         if (ticket == null) {
             return "redirect:/ticket/list";
         }
@@ -118,10 +118,10 @@ public class TicketController {
     @RequestMapping(value = "edit/{ticketId}", method = RequestMethod.GET)
     public ModelAndView showEdit(@PathVariable("ticketId") long ticketId,
             Principal principal, HttpServletRequest request) {
-        Ticket ticket = ticketService.getTicket(ticketId);
+        Item ticket = ticketService.getTicket(ticketId);
         if (ticket == null
                 || (!request.isUserInRole("ROLE_ADMIN")
-                && !principal.getName().equals(ticket.getCustomerName()))) {
+                && !principal.getName().equals(ticket.getOwner()))) {
             return new ModelAndView(new RedirectView("/ticket/list", true));
         }
 
@@ -129,8 +129,8 @@ public class TicketController {
         modelAndView.addObject("ticket", ticket);
 
         Form ticketForm = new Form();
-        ticketForm.setSubject(ticket.getSubject());
-        ticketForm.setBody(ticket.getBody());
+        ticketForm.setSubject(ticket.getName());
+        ticketForm.setBody(ticket.getDescription());
         modelAndView.addObject("ticketForm", ticketForm);
 
         return modelAndView;
@@ -140,10 +140,10 @@ public class TicketController {
     public View edit(@PathVariable("ticketId") long ticketId, Form form,
             Principal principal, HttpServletRequest request)
             throws IOException, TicketNotFound {
-        Ticket ticket = ticketService.getTicket(ticketId);
+        Item ticket = ticketService.getTicket(ticketId);
         if (ticket == null
                 || (!request.isUserInRole("ROLE_ADMIN")
-                && !principal.getName().equals(ticket.getCustomerName()))) {
+                && !principal.getName().equals(ticket.getOwner()))) {
             return new RedirectView("/ticket/list", true);
         }
 
