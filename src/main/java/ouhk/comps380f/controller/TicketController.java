@@ -45,25 +45,36 @@ public class TicketController {
 
     public static class Form {
 
-        private String subject;
-        private String body;
+        private String Name;
+        private String description;
+        private int price;
         private List<MultipartFile> attachments;
 
-        public String getSubject() {
-            return subject;
+        public String getName() {
+            return Name;
         }
 
-        public void setSubject(String subject) {
-            this.subject = subject;
+        public void setName(String Name) {
+            this.Name = Name;
         }
 
-        public String getBody() {
-            return body;
+        public String getDescription() {
+            return description;
         }
 
-        public void setBody(String body) {
-            this.body = body;
+        public void setDescription(String description) {
+            this.description = description;
         }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public void setPrice(int price) {
+            this.price = price;
+        }
+
+        
 
         public List<MultipartFile> getAttachments() {
             return attachments;
@@ -78,7 +89,7 @@ public class TicketController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String create(Form form, Principal principal) throws IOException {
         long ticketId = ticketService.createTicket(principal.getName(),
-                form.getSubject(), form.getBody(), form.getAttachments());
+                form.getName(), form.getDescription(), form.getPrice(),form.getAttachments());
         return "redirect:/ticket/view/" + ticketId;
     }
 
@@ -129,8 +140,8 @@ public class TicketController {
         modelAndView.addObject("ticket", ticket);
 
         Form ticketForm = new Form();
-        ticketForm.setSubject(ticket.getName());
-        ticketForm.setBody(ticket.getDescription());
+        //ticketForm.setSubject(ticket.getName());
+        //ticketForm.setBody(ticket.getDescription());
         modelAndView.addObject("ticketForm", ticketForm);
 
         return modelAndView;
@@ -147,8 +158,8 @@ public class TicketController {
             return new RedirectView("/ticket/list", true);
         }
 
-        ticketService.updateTicket(ticketId, form.getSubject(),
-                form.getBody(), form.getAttachments());
+        //ticketService.updateTicket(ticketId, form.getSubject(),
+        //        form.getBody(), form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }
 

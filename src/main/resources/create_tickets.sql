@@ -3,6 +3,7 @@ CREATE TABLE item (
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
     price FLOAT NOT NULL,
+    current_price FLOAT NOT NULL,
     owner VARCHAR(255) NOT NULL,
     num_of_bid INTEGER NOT NULL,
     status VARCHAR(255) NOT NULL,

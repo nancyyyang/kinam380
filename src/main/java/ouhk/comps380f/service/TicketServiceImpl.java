@@ -60,12 +60,18 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional
-    public long createTicket(String customerName, String subject,
-            String body, List<MultipartFile> attachments) throws IOException {
+    public long createTicket(String customerName, String name,
+            String description, int price, List<MultipartFile> attachments) throws IOException {
         Item ticket = new Item();
-        /*ticket.setCustomerName(customerName);
-        ticket.setSubject(subject);
-        ticket.setBody(body);*/
+        ticket.setOwner(customerName);
+        ticket.setName(name);
+        ticket.setDescription(description);
+        ticket.setPrice((float)price);
+        ticket.setCurrent_price((float)price);
+        ticket.setNum_of_bid(0);
+        ticket.setStatus("Available");
+        ticket.setWinner("");
+        
 
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
