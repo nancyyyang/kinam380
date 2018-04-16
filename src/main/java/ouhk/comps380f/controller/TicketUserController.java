@@ -62,6 +62,16 @@ public class TicketUserController {
     public ModelAndView create() {
         return new ModelAndView("addUser", "ticketUser", new Form());
     }
+    
+    @RequestMapping(value = "register", method = RequestMethod.POST)
+    public View register(Form form) throws IOException {
+        TicketUser user = new TicketUser(form.getUsername(),
+                form.getPassword(),
+                form.getRoles()
+        );
+        ticketUserRepo.save(user);
+        return new RedirectView("/user/list", true);
+    }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public View create(Form form) throws IOException {
