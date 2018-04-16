@@ -25,6 +25,8 @@ public class Item implements Serializable {
     private String description;
 
     private float price;
+    
+    private float current_price;
 
     private String owner;
 
@@ -97,7 +99,17 @@ public class Item implements Serializable {
     public void setId(long id) {
         this.id = id;
     }
-    @OneToMany(mappedBy = "item", fetch = FetchType.EAGER,
+
+    public float getCurrent_price() {
+        return current_price;
+    }
+
+    public void setCurrent_price(float current_price) {
+        this.current_price = current_price;
+    }
+    
+    
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
 

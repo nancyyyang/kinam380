@@ -30,11 +30,11 @@ public class Attachment implements Serializable {
     @Lob
     private byte[] contents;
 
-    @Column(name = "ticket_id", insertable = false, updatable = false)
+    @Column(name = "item_id", insertable = false, updatable = false)
     private long ticketId;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "item_id")
     private Item ticket;
 
     public long getId() {
