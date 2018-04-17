@@ -125,4 +125,21 @@ public class Item implements Serializable {
         attachment.setTicket(null);
         this.attachments.remove(attachment);
     }
+    
+    /*@OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comments> comments = new ArrayList<>();
+
+    public List<Comments> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comments> comments) {
+        this.comments = comments;
+    }
+
+    public void deleteAttachment(Comments comments) {
+        comments.setTicket(null);
+        this.comments.remove(comments);
+    }*/
 }

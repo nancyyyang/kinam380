@@ -82,6 +82,30 @@ public class TicketUserController {
         ticketUserRepo.save(user);
         return new RedirectView("/user/list", true);
     }
+    
+    @RequestMapping(value = "editUser/{username}", method = RequestMethod.GET)
+    public ModelAndView showEdit(@PathVariable("username") String username) {
+        TicketUser user = ticketUserRepo.findOne(username);
+
+        ModelAndView modelAndView = new ModelAndView("editUser");
+        modelAndView.addObject("user", user);
+
+        Form ticketUser = new Form();
+        ticketUser.setUsername(user.getUsername());
+        modelAndView.addObject("ticketUser", ticketUser);
+
+        return modelAndView;
+    }
+    
+    @RequestMapping(value = "editUser/{username}", method = RequestMethod.POST)
+    public View edit(Form form) throws IOException {
+        TicketUser user = new TicketUser(form.getUsername(),
+                form.getPassword(),
+                form.getRoles()
+        );
+        ticketUserRepo.save(user);
+        return new RedirectView("/user/list", true);
+    }
 
     @RequestMapping(value = "delete/{username}", method = RequestMethod.GET)
     public View deleteTicket(@PathVariable("username") String username) {
