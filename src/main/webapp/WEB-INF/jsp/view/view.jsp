@@ -25,7 +25,7 @@
         Status : <c:out value="${ticket.status}" /><br /><br />
         Description : <c:out value="${ticket.description}" /><br /><br />
         <c:if test="${ticket.winner!=""}">
-        Winner : <c:out value="${ticket.winner}" /><br /><br /></c:if>
+            Winner : <c:out value="${ticket.winner}" /><br /><br /></c:if>
         <c:if test="${fn:length(ticket.attachments) > 0}">
             Attachments:
             <c:forEach items="${ticket.attachments}" var="attachment"
@@ -35,6 +35,12 @@
                     <c:out value="${attachment.name}" /></a>
             </c:forEach><br /><br />
         </c:if>
+         <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
+            <form:label path="bidPrice">Bid Price:</form:label><br/>
+            <form:input type="number" path="bidPrice" min="${ticket.current_price+1}" onkeypress="return event.charCode >= 48 && event.charCode <= 57"/><br/>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <input type="submit" value="Submit"/>
+        </form></form:form>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>

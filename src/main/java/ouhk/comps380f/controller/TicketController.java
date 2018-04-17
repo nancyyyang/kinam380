@@ -18,8 +18,10 @@ import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
 import ouhk.comps380f.model.Item;
+import ouhk.comps380f.model.History;
 import ouhk.comps380f.service.AttachmentService;
 import ouhk.comps380f.service.TicketService;
+import ouhk.comps380f.service.HistoryService;
 import ouhk.comps380f.view.DownloadingView;
 
 @Controller
@@ -28,6 +30,9 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+    
+    @Autowired
+    private HistoryService historyService;
 
     @Autowired
     private AttachmentService attachmentService;
@@ -48,10 +53,19 @@ public class TicketController {
         private String Name;
         private String description;
         private int price;
+        private int bidPrice;
         private List<MultipartFile> attachments;
 
         public String getName() {
             return Name;
+        }
+
+        public int getBidPrice() {
+            return bidPrice;
+        }
+
+        public void setBidPrice(int bidPrice) {
+            this.bidPrice = bidPrice;
         }
 
         public void setName(String Name) {
@@ -74,8 +88,6 @@ public class TicketController {
             this.price = price;
         }
 
-        
-
         public List<MultipartFile> getAttachments() {
             return attachments;
         }
@@ -89,19 +101,31 @@ public class TicketController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     public String create(Form form, Principal principal) throws IOException {
         long ticketId = ticketService.createTicket(principal.getName(),
-                form.getName(), form.getDescription(), form.getPrice(),form.getAttachments());
+                form.getName(), form.getDescription(), form.getPrice(), form.getAttachments());
         return "redirect:/ticket/view/" + ticketId;
     }
 
     @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
-    public String view(@PathVariable("ticketId") long ticketId,
-            ModelMap model) {
+    public ModelAndView view(@PathVariable("ticketId") long ticketId,
+            ModelMap model) throws IOException, TicketNotFound{
         Item ticket = ticketService.getTicket(ticketId);
-        if (ticket == null) {
-            return "redirect:/ticket/list";
-        }
-        model.addAttribute("ticket", ticket);
-        return "view";
+        ModelAndView modelAndView = new ModelAndView("view");
+        modelAndView.addObject("ticket", ticket);
+
+        Form ticketForm = new Form();
+        ticketForm.setBidPrice((int)ticket.getCurrent_price()+1);
+        modelAndView.addObject("ticketForm", ticketForm);
+
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "view/{ticketId}", method = RequestMethod.POST)
+    public String viewUpdate(@PathVariable("ticketId") long ticketId, Form form, Principal principal) throws IOException, TicketNotFound {
+        ticketService.updateBiddingPrice(ticketId, (int)form.getBidPrice(), principal.getName());
+        Item item=ticketService.getTicket(ticketId);
+        historyService.createHistory(principal.getName(),form.getBidPrice(),item.getName(),ticketId);
+        return "redirect:/ticket/list";
+        
     }
 
     @RequestMapping(
