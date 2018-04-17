@@ -61,17 +61,16 @@ public class TicketServiceImpl implements TicketService {
     @Override
     @Transactional
     public long createTicket(String customerName, String name,
-            String description, int price, List<MultipartFile> attachments) throws IOException {
+            String description, float price, List<MultipartFile> attachments) throws IOException {
         Item ticket = new Item();
         ticket.setOwner(customerName);
         ticket.setName(name);
         ticket.setDescription(description);
-        ticket.setPrice((float)price);
-        ticket.setCurrent_price((float)price);
+        ticket.setPrice((float) price);
+        ticket.setCurrent_price((float) price);
         ticket.setNum_of_bid(0);
         ticket.setStatus("Available");
         ticket.setWinner("");
-        
 
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
@@ -101,7 +100,6 @@ public class TicketServiceImpl implements TicketService {
 
         //updatedTicket.setSubject(subject);
         //updatedTicket.setBody(body);
-
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
             attachment.setName(filePart.getOriginalFilename());
@@ -117,4 +115,19 @@ public class TicketServiceImpl implements TicketService {
         ticketRepo.save(updatedTicket);
     }
 
+    @Override
+    @Transactional(rollbackFor = TicketNotFound.class)
+    public void updateBiddingPrice(long id, float bidPrice, String winner)
+            throws IOException, TicketNotFound {
+        Item updatedTicket = ticketRepo.findOne(id);
+        if (updatedTicket == null) {
+            throw new TicketNotFound();
+            
+        }
+        updatedTicket.setCurrent_price((float) bidPrice);
+        updatedTicket.setNum_of_bid(updatedTicket.getNum_of_bid()+1);
+        updatedTicket.setWinner(winner);
+        ticketRepo.save(updatedTicket);
+    }
+    
 }

@@ -10,7 +10,7 @@ import ouhk.comps380f.model.Item;
 public interface TicketService {
 
     public long createTicket(String customerName, String name,
-            String description, int price, List<MultipartFile> attachments) throws IOException;
+            String description, float price, List<MultipartFile> attachments) throws IOException;
 
     public List<Item> getTickets();
 
@@ -18,6 +18,9 @@ public interface TicketService {
 
     public void updateTicket(long id, String subject,
             String body, List<MultipartFile> attachments)
+            throws IOException, TicketNotFound;
+    
+    public void updateBiddingPrice(long id,float bidPrice, String winner)
             throws IOException, TicketNotFound;
 
     public void delete(long id) throws TicketNotFound;
