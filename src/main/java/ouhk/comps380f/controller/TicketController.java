@@ -18,8 +18,10 @@ import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
 import ouhk.comps380f.model.Item;
+import ouhk.comps380f.model.History;
 import ouhk.comps380f.service.AttachmentService;
 import ouhk.comps380f.service.TicketService;
+import ouhk.comps380f.service.HistoryService;
 import ouhk.comps380f.view.DownloadingView;
 
 @Controller
@@ -28,6 +30,9 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+    
+    @Autowired
+    private HistoryService historyService;
 
     @Autowired
     private AttachmentService attachmentService;
@@ -117,6 +122,8 @@ public class TicketController {
     @RequestMapping(value = "view/{ticketId}", method = RequestMethod.POST)
     public String viewUpdate(@PathVariable("ticketId") long ticketId, Form form, Principal principal) throws IOException, TicketNotFound {
         ticketService.updateBiddingPrice(ticketId, (int)form.getBidPrice(), principal.getName());
+        Item item=ticketService.getTicket(ticketId);
+        historyService.createHistory(principal.getName(),form.getBidPrice(),item.getName(),ticketId);
         return "redirect:/ticket/list";
         
     }

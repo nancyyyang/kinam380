@@ -22,6 +22,9 @@ public interface TicketService {
     
     public void updateBiddingPrice(long id,float bidPrice, String winner)
             throws IOException, TicketNotFound;
+    
+    public void addHistoryBiddingPrice(long id,float bidPrice, String user)
+            throws IOException, TicketNotFound;
 
     public void delete(long id) throws TicketNotFound;
 

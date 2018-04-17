@@ -129,5 +129,19 @@ public class TicketServiceImpl implements TicketService {
         updatedTicket.setWinner(winner);
         ticketRepo.save(updatedTicket);
     }
+    @Override
+    @Transactional(rollbackFor = TicketNotFound.class)
+    public void addHistoryBiddingPrice(long id,float bidPrice, String user)
+            throws IOException, TicketNotFound {
+        Item updatedTicket = ticketRepo.findOne(id);
+        if (updatedTicket == null) {
+            throw new TicketNotFound();
+            
+        }
+        updatedTicket.setCurrent_price((float) bidPrice);
+        updatedTicket.setNum_of_bid(updatedTicket.getNum_of_bid()+1);
+        updatedTicket.setWinner(user);
+        ticketRepo.save(updatedTicket);
+    }
     
 }
