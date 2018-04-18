@@ -17,9 +17,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import ouhk.comps380f.exception.AttachmentNotFound;
 import ouhk.comps380f.exception.TicketNotFound;
 import ouhk.comps380f.model.Attachment;
+import ouhk.comps380f.model.Comments;
 import ouhk.comps380f.model.Item;
-import ouhk.comps380f.model.History;
 import ouhk.comps380f.service.AttachmentService;
+import ouhk.comps380f.service.CommentService;
 import ouhk.comps380f.service.TicketService;
 import ouhk.comps380f.service.HistoryService;
 import ouhk.comps380f.view.DownloadingView;
@@ -33,6 +34,9 @@ public class TicketController {
     
     @Autowired
     private HistoryService historyService;
+    
+    @Autowired
+    private CommentService commentService;
 
     @Autowired
     private AttachmentService attachmentService;
@@ -47,6 +51,12 @@ public class TicketController {
     public ModelAndView create() {
         return new ModelAndView("add", "ticketForm", new Form());
     }
+    
+    @RequestMapping(value = "view/comment/{ticketId}", method = RequestMethod.GET)
+    public ModelAndView comment() {
+        return new ModelAndView("comment", "ticketForm", new Form());
+    }
+    
 
     public static class Form {
 
@@ -104,14 +114,27 @@ public class TicketController {
                 form.getName(), form.getDescription(), form.getPrice(), form.getAttachments());
         return "redirect:/ticket/view/" + ticketId;
     }
+    
+    @RequestMapping(value = "view/comment/{ticketId}", method = RequestMethod.POST)
+    public String createComment(@PathVariable("ticketId") int ticketId, Form form, Principal principal) throws IOException {
+        commentService.createComment(principal.getName(),form.getDescription(),ticketId);
+        return "redirect:/ticket/view/" + ticketId;
+    }
+    
+    @RequestMapping(value = "view/{ticketId}/deleteComment/{commentId}", method = RequestMethod.GET)
+    public String deleteComment(@PathVariable("ticketId") int ticketId,@PathVariable("commentId") int commentId) throws IOException {
+        commentService.deleteComments(commentId);
+        return "redirect:/ticket/view/" + ticketId;
+    }
 
     @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
     public ModelAndView view(@PathVariable("ticketId") long ticketId,
             ModelMap model) throws IOException, TicketNotFound{
         Item ticket = ticketService.getTicket(ticketId);
+        List<Comments> comments=commentService.getComments(ticketId);
         ModelAndView modelAndView = new ModelAndView("view");
         modelAndView.addObject("ticket", ticket);
-
+        modelAndView.addObject("comments", comments);
         Form ticketForm = new Form();
         ticketForm.setBidPrice((int)ticket.getCurrent_price()+1);
         modelAndView.addObject("ticketForm", ticketForm);

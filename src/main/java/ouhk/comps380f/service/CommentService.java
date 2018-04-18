@@ -7,7 +7,9 @@ import ouhk.comps380f.model.Comments;
 
 public interface CommentService {
     
-    public long createComment(String name,String content, int item_id) throws IOException;
+    public long createComment(String name,String content, long item_id) throws IOException;
 
-    public List<Comments> getComments(long id);
+    public List<Comments> getComments(long item_id);
+    
+    public void deleteComments(long item_id);
 }

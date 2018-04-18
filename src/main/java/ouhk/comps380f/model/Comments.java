@@ -21,20 +21,15 @@ public class Comments implements Serializable {
     @Column(name = "content")
     private String content;
     
-    @Column(name = "item_id", insertable = false, updatable = false)
-    private long ticketId;
+    private long itemId;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id")
-    private Item ticket;
 
     public Comments(){}
 
-    public Comments(String name, String content, long ticketId, Item ticket) {
+    public Comments(String name, String content, long item_id) {
         this.name = name;
         this.content = content;
-        this.ticketId = ticketId;
-        this.ticket = ticket;
+        this.itemId = item_id;
     }
 
     public long getId() {
@@ -61,22 +56,12 @@ public class Comments implements Serializable {
         this.content = content;
     }
 
-    public long getTicketId() {
-        return ticketId;
+    public long getItemId() {
+        return itemId;
     }
 
-    public void setTicketId(long ticketId) {
-        this.ticketId = ticketId;
+    public void setItemId(long item_id) {
+        this.itemId = item_id;
     }
-
-    public Item getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(Item ticket) {
-        this.ticket = ticket;
-    }
-    
-    
     
 }

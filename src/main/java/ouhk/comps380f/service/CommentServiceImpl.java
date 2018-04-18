@@ -13,16 +13,20 @@ public class CommentServiceImpl implements CommentService{
     @Resource
     private CommentRepository commentRepo;
     
-    public long createComment(String name,String content, int item_id) throws IOException{
+    public long createComment(String name,String content, long item_id) throws IOException{
         Comments comment = new Comments();
         comment.setName(name);
         comment.setContent(content);
-        comment.setTicketId(item_id);
+        comment.setItemId(item_id);
         Comments savedTicket = commentRepo.save(comment);
         return savedTicket.getId();
     }
 
-    public List<Comments> getComments(long id){
-        return commentRepo.findAll();
+    public List<Comments> getComments(long item_id){
+        return commentRepo.findByItemId(item_id);
+    }
+    
+    public void deleteComments(long id){
+        commentRepo.delete(commentRepo.findOne(id));
     }
 }

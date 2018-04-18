@@ -35,6 +35,16 @@
                     <c:out value="${attachment.name}" /></a>
             </c:forEach><br /><br />
         </c:if>
+        Comments : 
+        <c:if test="${fn:length(comments) > 0}">
+
+            <ul>
+            <c:forEach items="${comments}" var="comment">
+                <li>${comment.content} by ${comment.name} [<a href="<c:url value="${ticket.id}/deleteComment/${comment.id}" />">Delete Comment</a>]</li>
+            </c:forEach>
+                </ul>
+        </c:if><br>
+        [<a href="<c:url value="comment/${ticket.id}" />">Add a Comment</a>]
          <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
             <form:label path="bidPrice">Bid Price:</form:label><br/>
             <form:input type="number" path="bidPrice" min="${ticket.current_price+1}" onkeypress="return event.charCode >= 48 && event.charCode <= 57"/><br/>
