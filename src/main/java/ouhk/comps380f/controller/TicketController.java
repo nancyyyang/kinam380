@@ -42,6 +42,13 @@ public class TicketController {
         model.addAttribute("ticketDatabase", ticketService.getTickets());
         return "list";
     }
+    
+     @RequestMapping(value = "history", method = RequestMethod.GET)
+    public String historyList(ModelMap model, Principal principal) {
+        model.addAttribute("historyDatabase", historyService.getHistorysByName(principal.getName()));
+        model.addAttribute("name", principal.getName());
+        return "history";
+    }
 
     @RequestMapping(value = "create", method = RequestMethod.GET)
     public ModelAndView create() {

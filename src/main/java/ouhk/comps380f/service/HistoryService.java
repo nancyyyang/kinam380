@@ -11,4 +11,6 @@ public interface HistoryService {
     
         public List<History> getHistorys();
         
+        public List<History> getHistorysByName(String name);
+        
 }

@@ -37,4 +37,9 @@ public class HistoryServiceImpl implements HistoryService{
         History savedTicket = historyRepo.save(his);
         
     }
+    @Override
+    @Transactional
+     public List<History> getHistorysByName(String name) {
+        return historyRepo.findByName(name);
+     }
 }

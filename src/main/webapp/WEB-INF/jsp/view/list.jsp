@@ -9,7 +9,7 @@
             <input type="submit" value="Log out" />
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form><br/>
-        <form method="get" action="/history">
+        <form method="get" action="<c:url value="/ticket/history" />">
             <button type="submit">history</button>
         </form>
 
