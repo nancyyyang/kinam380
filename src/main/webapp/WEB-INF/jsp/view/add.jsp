@@ -19,7 +19,7 @@
             <form:label path="description">Description</form:label><br/>
             <form:textarea path="description" rows="5" cols="30" /><br/><br/>
             <b>Attachments</b><br/>
-            <input type="file" name="attachments" multiple="multiple"/><br/><br/>
+            <input type="file" name="attachments" multiple="multiple" accept="image/*"/><br/><br/>
             <input type="submit" value="Submit"/>
         </form:form>
     </body>

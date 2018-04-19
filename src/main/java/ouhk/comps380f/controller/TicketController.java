@@ -194,8 +194,9 @@ public class TicketController {
         modelAndView.addObject("ticket", ticket);
 
         Form ticketForm = new Form();
-        //ticketForm.setSubject(ticket.getName());
-        //ticketForm.setBody(ticket.getDescription());
+        ticketForm.setName(ticket.getName());
+        ticketForm.setPrice((int)ticket.getPrice());
+        ticketForm.setDescription(ticket.getDescription());
         modelAndView.addObject("ticketForm", ticketForm);
 
         return modelAndView;
@@ -212,8 +213,8 @@ public class TicketController {
             return new RedirectView("/ticket/list", true);
         }
 
-        //ticketService.updateTicket(ticketId, form.getSubject(),
-        //        form.getBody(), form.getAttachments());
+        ticketService.updateTicket(ticketId, form.getName(),form.getPrice(),
+                form.getDescription(), form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }
 

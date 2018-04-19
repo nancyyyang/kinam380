@@ -16,7 +16,7 @@ public interface TicketService {
 
     public Item getTicket(long id);
 
-    public void updateTicket(long id, String subject,
+    public void updateTicket(long id, String subject, int price,
             String body, List<MultipartFile> attachments)
             throws IOException, TicketNotFound;
     

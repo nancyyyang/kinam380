@@ -23,5 +23,6 @@
                 </c:forEach>
             </c:otherwise>
         </c:choose>
+                    <br><a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>

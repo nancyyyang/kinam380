@@ -31,8 +31,8 @@
             <c:forEach items="${ticket.attachments}" var="attachment"
                        varStatus="status">
                 <c:if test="${!status.first}">, </c:if>
-                <a href="<c:url value="/ticket/${ticket.id}/attachment/${attachment.name}" />">
-                    <c:out value="${attachment.name}" /></a>
+                <img src="<c:url value="/ticket/${ticket.id}/attachment/${attachment.name}" />" height="120" width="240">
+                    <c:out value="${attachment.name}" />
             </c:forEach><br /><br />
         </c:if>
         Comments : 
@@ -48,7 +48,6 @@
             </c:forEach>
                 </ul>
         </c:if><br>
-        <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
         [<a href="<c:url value="comment/${ticket.id}" />">Add a Comment</a>]
          <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
             <form:label path="bidPrice">Bid Price:</form:label><br/>
@@ -56,7 +55,6 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="submit" value="Submit"/>
         </form></form:form>
-        </security:authorize>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>
