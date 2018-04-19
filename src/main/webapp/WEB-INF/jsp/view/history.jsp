@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Bidding history</title>
+        <title>Online Bidding Website</title>
     </head>
     <body>
         <c:url var="logoutUrl" value="/logout"/>
