@@ -42,8 +42,9 @@ public class TicketController {
     private AttachmentService attachmentService;
 
     @RequestMapping(value = {"", "list"}, method = RequestMethod.GET)
-    public String list(ModelMap model) {
+    public String list(ModelMap model, Principal principal) {
         model.addAttribute("ticketDatabase", ticketService.getTickets());
+        model.addAttribute("name", principal.getName());
         return "list";
     }
     
@@ -69,6 +70,8 @@ public class TicketController {
 
         private String Name;
         private String description;
+        private String winner;
+        private String status;
         private int price;
         private int bidPrice;
         private List<MultipartFile> attachments;
@@ -113,6 +116,22 @@ public class TicketController {
             this.attachments = attachments;
         }
 
+        public String getWinner() {
+            return winner;
+        }
+
+        public void setWinner(String winner) {
+            this.winner = winner;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
     }
 
     @RequestMapping(value = "create", method = RequestMethod.POST)
@@ -137,6 +156,7 @@ public class TicketController {
     @RequestMapping(value = "view/{ticketId}", method = RequestMethod.GET)
     public ModelAndView view(@PathVariable("ticketId") long ticketId,
             ModelMap model, Principal principal) throws IOException, TicketNotFound{
+        String newName = "";
         Item ticket = ticketService.getTicket(ticketId);
         List<Comments> comments=commentService.getComments(ticketId);
         ModelAndView modelAndView = new ModelAndView("view");
@@ -145,16 +165,25 @@ public class TicketController {
         Form ticketForm = new Form();
         ticketForm.setBidPrice((int)ticket.getCurrent_price()+1);
         modelAndView.addObject("ticketForm", ticketForm);
-        model.addAttribute("name", principal.getName());
+        if (principal == null)
+        {newName = "guest";}
+        model.addAttribute("name", newName);
         return modelAndView;
     }
 
     @RequestMapping(value = "view/{ticketId}", method = RequestMethod.POST)
     public String viewUpdate(@PathVariable("ticketId") long ticketId, Form form, Principal principal) throws IOException, TicketNotFound {
-        ticketService.updateBiddingPrice(ticketId, (int)form.getBidPrice(), principal.getName());
         Item item=ticketService.getTicket(ticketId);
+        if(!principal.getName().equals(item.getOwner())){
+        ticketService.updateBiddingPrice(ticketId, (int)form.getBidPrice(), principal.getName());
+        
         historyService.createHistory(principal.getName(),form.getBidPrice(),item.getName(),ticketId);
         return "redirect:/ticket/list";
+        }
+        else{
+            ticketService.updateStatus(ticketId, form.getWinner(), form.getStatus());
+            return "redirect:/ticket/list";
+        }
         
     }
 

@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Customer Support</title>
+        <title>Online Bidding Website</title>
     </head>
     <body>
+        <security:authorize access="isAuthenticated()">
         <c:url var="logoutUrl" value="/logout"/>
         <form action="${logoutUrl}" method="post">
             <input type="submit" value="Log out" />
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
+        </security:authorize>
 
         <h2>Item #${ticket.id}: <c:out value="${ticket.name}" /></h2>
+        <security:authorize access="isAuthenticated()">
         <security:authorize access="hasRole('ADMIN') or principal.username=='${ticket.owner}'">            
             [<a href="<c:url value="/ticket/edit/${ticket.id}" />">Edit</a>]
         </security:authorize>
         <security:authorize access="hasRole('ADMIN')">            
             [<a href="<c:url value="/ticket/delete/${ticket.id}" />">Delete</a>]
+        </security:authorize>
         </security:authorize>
         <br /><br />
         <i>Owner : <c:out value="${ticket.owner}" /></i><br /><br />
@@ -40,17 +44,34 @@
 
             <ul>
             <c:forEach items="${comments}" var="comment">
-                <li>${comment.content} by ${comment.name} [<a href="<c:url value="${ticket.id}/deleteComment/${comment.id}" />">Delete Comment</a>]</li>
+                <li>${comment.content} by ${comment.name} 
+                    <security:authorize access="hasRole('ADMIN')">
+                        [<a href="<c:url value="${ticket.id}/deleteComment/${comment.id}" />">Delete Comment</a>]
+                    </security:authorize>
+                    </li>
             </c:forEach>
                 </ul>
         </c:if><br>
+        <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
         [<a href="<c:url value="comment/${ticket.id}" />">Add a Comment</a>]
-         <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
-            <form:label path="bidPrice">Bid Price:</form:label><br/>
-            <form:input type="number" path="bidPrice" min="${ticket.current_price+1}" onkeypress="return event.charCode >= 48 && event.charCode <= 57"/><br/>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            <input type="submit" value="Submit"/>
-        </form></form:form>
+        <c:if test="${ticket.status ne 'Ended'}">
+            <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">    
+            <security:authorize access="principal.username!='${ticket.owner}'">
+                <form:label path="bidPrice">Bid Price:</form:label><br/>
+                <form:input type="number" path="bidPrice" min="${ticket.current_price+1}" onkeypress="return event.charCode >= 48 && event.charCode <= 57"/><br/></security:authorize>
+                <security:authorize access="principal.username == '${ticket.owner}'">
+                    <form:radiobutton path="winner" value="No Winner" />End without winner
+                    <form:radiobutton path="winner" value="${ticket.winner}" />End with ${ticket.winner} as winner
+                    <form:hidden path="status" value="Ended"></form:hidden>
+                </security:authorize>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                <input type="submit" value="Submit"/>
+
+            </form:form>
+        </c:if>
+        
+        </security:authorize>
+        <br/><br/>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>

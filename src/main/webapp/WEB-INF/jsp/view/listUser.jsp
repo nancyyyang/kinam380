@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <body>
+    <head>
+        <title>Online Bidding Website</title>
+    </head>
 <c:url var="logoutUrl" value="/logout"/>
 <form action="${logoutUrl}" method="post">
     <input type="submit" value="Log out" />

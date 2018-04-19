@@ -21,11 +21,12 @@
         </security:authorize>
         
 
-        <h2>Tickets</h2>
+        <h2>Showing ${fn:length(ticketDatabase)} Product(s)</h2>
         <security:authorize access="hasRole('ADMIN')">    
             <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
         </security:authorize>
         <security:authorize access="isAuthenticated()">
+            <h3>Hi! ${name}!<br/></h3>
         <a href="<c:url value="/ticket/create" />">Create a Ticket</a><br /><br />
         </security:authorize>
         

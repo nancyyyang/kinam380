@@ -143,6 +143,8 @@ public class TicketServiceImpl implements TicketService {
         updatedTicket.setWinner(user);
         ticketRepo.save(updatedTicket);
     }
+    @Override
+    @Transactional(rollbackFor = TicketNotFound.class)
     public void updateStatus(long id, String winner, String status)
             throws IOException, TicketNotFound {
         Item updatedTicket = ticketRepo.findOne(id);
@@ -152,6 +154,7 @@ public class TicketServiceImpl implements TicketService {
         }
         updatedTicket.setWinner(winner);
         updatedTicket.setStatus(status);
+        ticketRepo.save(updatedTicket);
     }
     
 }
