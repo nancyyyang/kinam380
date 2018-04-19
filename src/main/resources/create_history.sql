@@ -4,6 +4,5 @@ CREATE TABLE history (
     bidPrice FLOAT DEFAULT NULL,
     productName VARCHAR(255),
     item_id INTEGER DEFAULT NULL,
-    PRIMARY KEY (id),
-FOREIGN KEY (item_id) REFERENCES item(id) 
+    PRIMARY KEY (id)
 );

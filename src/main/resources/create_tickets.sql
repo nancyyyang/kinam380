@@ -26,6 +26,5 @@ CREATE TABLE comments (
     name VARCHAR(255) NOT NULL,
     content VARCHAR(255) DEFAULT NULL,
     itemId INTEGER DEFAULT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (itemId) REFERENCES item(id) 
+    PRIMARY KEY (id)
 );

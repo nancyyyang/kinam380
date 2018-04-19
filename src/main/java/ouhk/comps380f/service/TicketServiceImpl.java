@@ -90,7 +90,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     @Transactional(rollbackFor = TicketNotFound.class)
-    public void updateTicket(long id, String subject,
+    public void updateTicket(long id, String subject, int price,
             String body, List<MultipartFile> attachments)
             throws IOException, TicketNotFound {
         Item updatedTicket = ticketRepo.findOne(id);
@@ -98,8 +98,9 @@ public class TicketServiceImpl implements TicketService {
             throw new TicketNotFound();
         }
 
-        //updatedTicket.setSubject(subject);
-        //updatedTicket.setBody(body);
+        updatedTicket.setName(subject);
+        updatedTicket.setDescription(body);
+        updatedTicket.setPrice(price);
         for (MultipartFile filePart : attachments) {
             Attachment attachment = new Attachment();
             attachment.setName(filePart.getOriginalFilename());
@@ -108,7 +109,8 @@ public class TicketServiceImpl implements TicketService {
             attachment.setTicket(updatedTicket);
             if (attachment.getName() != null && attachment.getName().length() > 0
                     && attachment.getContents() != null
-                    && attachment.getContents().length > 0) {
+                    && attachment.getContents().length > 0
+                    && !updatedTicket.getAttachments().contains(attachment)) {
                 updatedTicket.getAttachments().add(attachment);
             }
         }

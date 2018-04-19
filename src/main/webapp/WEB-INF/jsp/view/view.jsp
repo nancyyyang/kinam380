@@ -35,8 +35,8 @@
             <c:forEach items="${ticket.attachments}" var="attachment"
                        varStatus="status">
                 <c:if test="${!status.first}">, </c:if>
-                <a href="<c:url value="/ticket/${ticket.id}/attachment/${attachment.name}" />">
-                    <c:out value="${attachment.name}" /></a>
+                <img src="<c:url value="/ticket/${ticket.id}/attachment/${attachment.name}" />" height="120" width="240">
+                    <c:out value="${attachment.name}" />
             </c:forEach><br /><br />
         </c:if>
         Comments : 
@@ -68,8 +68,8 @@
                 <input type="submit" value="Submit"/>
 
             </form:form>
-        </c:if>
         
+        </c:if>
         </security:authorize>
         <br/><br/>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
