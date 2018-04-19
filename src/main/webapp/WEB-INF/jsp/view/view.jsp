@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Customer Support</title>
+        <title>Online Bidding Website</title>
     </head>
     <body>
         <c:url var="logoutUrl" value="/logout"/>
@@ -40,10 +40,15 @@
 
             <ul>
             <c:forEach items="${comments}" var="comment">
-                <li>${comment.content} by ${comment.name} [<a href="<c:url value="${ticket.id}/deleteComment/${comment.id}" />">Delete Comment</a>]</li>
+                <li>${comment.content} by ${comment.name} 
+                    <security:authorize access="hasRole('ADMIN')">
+                        [<a href="<c:url value="${ticket.id}/deleteComment/${comment.id}" />">Delete Comment</a>]
+                    </security:authorize>
+                    </li>
             </c:forEach>
                 </ul>
         </c:if><br>
+        <security:authorize access="hasRole('ADMIN') or hasRole('USER')">
         [<a href="<c:url value="comment/${ticket.id}" />">Add a Comment</a>]
          <form:form method="POST" enctype="multipart/form-data" modelAttribute="ticketForm">
             <form:label path="bidPrice">Bid Price:</form:label><br/>
@@ -51,6 +56,7 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <input type="submit" value="Submit"/>
         </form></form:form>
+        </security:authorize>
         <a href="<c:url value="/ticket" />">Return to list tickets</a>
     </body>
 </html>
